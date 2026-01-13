@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rate Entertainment</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+    .top { display:flex; gap:12px; align-items:center; }
+    .top a { text-decoration:none; font-size:16px; }
+    h2 { margin: 0; }
+
+    label.hdr { display:block; margin-top: 16px; font-weight: 750; }
+
+    /* 5-point scale */
+    .scale {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .option input { display:none; }
+    .tile {
+      border: 2px solid #ccc;
+      border-radius: 14px;
+      padding: 14px 10px;
+      text-align: center;
+      user-select: none;
+      font-size: 16px;
+      line-height: 1.2;
+    }
+    .emoji { font-size: 38px; display:block; margin-bottom: 8px; }
+
+    /* color feel: red -> yellow -> green */
+    .c1 { background: #ffd6d6; }
+    .c2 { background: #ffe2cc; }
+    .c3 { background: #fff2cc; }
+    .c4 { background: #e9f7d8; }
+    .c5 { background: #d9f7df; }
+
+    .option input:checked + .tile {
+      border-color: #000;
+      box-shadow: 0 0 0 2px rgba(0,0,0,0.08);
+    }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      font-size: 18px;
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 18px;
+      width: 100%;
+      font-size: 20px;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <a href="index.html">← Back</a>
+    <h2>Rate Entertainment</h2>
+  </div>
+
+  <form method="POST" action="submit_entertainment.php" autocomplete="off">
+    <label class="hdr" for="event_name">Program / Entertainment name (optional)</label>
+    <input id="event_name" name="event_name" type="text" placeholder="e.g., Jazz Trio, Bingo Night" />
+
+    <label class="hdr">How much did you enjoy it?</label>
+    <div class="scale">
+      <label class="option">
+        <input type="radio" name="rating" value="1" required>
+        <div class="tile c1">
+          <span class="emoji">☹️</span>
+          Very Poor
+        </div>
+      </label>
+
+      <label class="option">
+        <input type="radio" name="rating" value="2">
+        <div class="tile c2">
+          <span class="emoji">🙁</span>
+          Poor
+        </div>
+      </label>
+
+      <label class="option">
+        <input type="radio" name="rating" value="3">
+        <div class="tile c3">
+          <span class="emoji">😐</span>
+          Okay
+        </div>
+      </label>
+
+      <label class="option">
+        <input type="radio" name="rating" value="4">
+        <div class="tile c4">
+          <span class="emoji">🙂</span>
+          Good
+        </div>
+      </label>
+
+      <label class="option">
+        <input type="radio" name="rating" value="5">
+        <div class="tile c5">
+          <span class="emoji">😄</span>
+          Excellent
+        </div>
+      </label>
+    </div>
+
+    <label class="hdr" for="comments">Comments</label>
+    <textarea id="comments" name="comments" rows="5" placeholder="Tell us what you liked or what could be better..."></textarea>
+
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>
