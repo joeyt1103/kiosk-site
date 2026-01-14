@@ -19,7 +19,7 @@
     <h2 style="margin:0;">Volunteer Hours</h2>
   </div>
 
-  <form method="POST" action="submit_volunteer.php" autocomplete="off">
+  <form id="volForm" autocomplete="off">
     <label for="name">Name</label>
     <input id="name" name="name" required />
 
@@ -28,5 +28,48 @@
 
     <button type="submit">Submit</button>
   </form>
+  <script>
+  // Put your real endpoint here later (Power Automate / API). Leave blank for now to just loop back.
+  const VOLUNTEER_ENDPOINT = ""; // e.g. "https://YOUR-ENDPOINT-HERE"
+
+  function showSuccessAndReturn() {
+    document.body.innerHTML = `
+      <div style="font-family:system-ui, -apple-system, sans-serif; padding:20px; max-width:700px; margin:0 auto;">
+        <h3>Submitted successfully ✅</h3>
+        <p>Returning to the home screen…</p>
+      </div>`;
+    setTimeout(() => { window.location.href = "index.html"; }, 1500);
+  }
+
+  document.getElementById("volForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const hours = Number(document.getElementById("hours").value);
+
+    if (!name || Number.isNaN(hours) || hours < 0) {
+      alert("Please enter a valid name and hours.");
+      return;
+    }
+
+    // If no backend yet, still loop back like a kiosk.
+    if (!VOLUNTEER_ENDPOINT) {
+      showSuccessAndReturn();
+      return;
+    }
+
+    try {
+      const res = await fetch(VOLUNTEER_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "volunteer", name, hours })
+      });
+      if (!res.ok) throw new Error("Request failed");
+      showSuccessAndReturn();
+    } catch (err) {
+      alert("Submission failed. Check your endpoint and internet connection.");
+    }
+  });
+</script>
 </body>
 </html>
