@@ -33,46 +33,52 @@
   </form>
 
   <script>
-    // Replace with your Formspree "Volunteer" form endpoint:
-    // Example: https://formspree.io/f/abcdwxyz
-    const FORMSPREE_VOLUNTEER_URL = "https://formspree.io/f/xaqqnnqq";
+  // Paste your Apps Script Web App URL here (must end with /exec)
+  const GOOGLE_SCRIPT_URL = https://script.google.com/macros/s/AKfycbylo0Oj9UTYtBAX-r-tPy4Yeyb2mByDQrzp4jrwLnZdtUZQqhs15bhglvBbMX-TsjQTWQ/exec;
 
-    function showSuccessAndReturn() {
-      document.body.innerHTML = `
-        <div style="font-family:system-ui, -apple-system, sans-serif; padding:20px; max-width:700px; margin:0 auto;">
-          <h3>Submitted successfully ✅</h3>
-          <p>Returning to the home screen…</p>
-        </div>`;
-      setTimeout(() => { window.location.href = "index.html"; }, 1500);
+  function showSuccessAndReturn() {
+    document.body.innerHTML = `
+      <div style="font-family:system-ui, -apple-system, sans-serif; padding:20px; max-width:700px; margin:0 auto;">
+        <h3>Submitted successfully ✅</h3>
+        <p>Returning to the home screen…</p>
+      </div>`;
+    setTimeout(() => { window.location.href = "index.html"; }, 1500);
+  }
+
+  document.getElementById("volForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const hoursRaw = document.getElementById("hours").value;
+    const hours = Number(hoursRaw);
+
+    if (!name || hoursRaw === "" || Number.isNaN(hours) || hours < 0) {
+      alert("Please enter a valid name and hours.");
+      return;
     }
 
-    document.getElementById("volForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+    try {
+      const res = await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "volunteer",
+          name: name,
+          hours: hours
+        })
+      });
 
-      const name = document.getElementById("name").value.trim();
-      const hoursVal = document.getElementById("hours").value;
-      const hours = Number(hoursVal);
+      if (!res.ok) throw new Error("Request failed");
 
-      if (!name || hoursVal === "" || Number.isNaN(hours) || hours < 0) {
-        alert("Please enter a valid name and hours.");
-        return;
-      }
+      // Optional: check JSON response {ok:true}
+      const data = await res.json().catch(() => ({}));
+      if (data.ok !== true) throw new Error("Server returned error");
 
-      const form = document.getElementById("volForm");
-
-      try {
-        const res = await fetch(FORMSPREE_VOLUNTEER_URL, {
-          method: "POST",
-          headers: { "Accept": "application/json" },
-          body: new FormData(form)
-        });
-
-        if (!res.ok) throw new Error("Submission failed");
-        showSuccessAndReturn();
-      } catch (err) {
-        alert("Submission failed. Please check internet and try again.");
-      }
-    });
-  </script>
+      showSuccessAndReturn();
+    } catch (err) {
+      alert("Submission failed. Please check internet and try again.");
+    }
+  });
+</script>
 </body>
 </html>
