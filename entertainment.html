@@ -111,45 +111,71 @@
 
     <button type="submit">Submit</button>
   </form>
+<script>
+  // 🔧 REPLACE this with your Google Apps Script Web App URL (must end with /exec)
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZkuOu7B81GYRBZhUSV1aTIeHAXyCFNmvRRnRNA0IwDFNdAMqMwLI6LFPjcunC-Xc/exec";
 
-  <script>
-    // Replace with your Formspree "Entertainment" form endpoint:
-    // Example: https://formspree.io/f/abcdwxyz
-    const FORMSPREE_ENTERTAINMENT_URL = "https://formspree.io/f/mgoovvop";
+  function showSuccessAndReturn() {
+    document.body.innerHTML = `
+      <div style="font-family:system-ui, -apple-system, sans-serif; padding:20px; max-width:800px; margin:0 auto;">
+        <h3>Submitted successfully ✅</h3>
+        <p>Returning to the home screen…</p>
+      </div>`;
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 1500);
+  }
 
-    function showSuccessAndReturn() {
-      document.body.innerHTML = `
-        <div style="font-family:system-ui, -apple-system, sans-serif; padding:20px; max-width:800px; margin:0 auto;">
-          <h3>Submitted successfully ✅</h3>
-          <p>Returning to the home screen…</p>
-        </div>`;
-      setTimeout(() => { window.location.href = "index.html"; }, 1500);
+  document.getElementById("entForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Read values from the form
+    const name = document.getElementById("name").value.trim();
+    const ratingRaw = document.querySelector('input[name="rating"]:checked')?.value;
+    const rating = Number(ratingRaw);
+    const comment = document.getElementById("comment").value.trim();
+
+    // Basic validation
+    if (!name) {
+      alert("Please enter your name.");
+      return;
+    }
+    if (!ratingRaw || Number.isNaN(rating) || rating < 1 || rating > 5) {
+      alert("Please select a rating.");
+      return;
     }
 
-    document.getElementById("entForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+    try {
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          type: "entertainment",
+          name: name,
+          rating: rating,
+          comment: comment
+        })
+      });
 
-      const name = document.getElementById("name").value.trim();
-      const rating = document.querySelector('input[name="rating"]:checked')?.value;
-
-      if (!name) { alert("Please enter your name."); return; }
-      if (!rating) { alert("Please select a rating."); return; }
-
-      const form = document.getElementById("entForm");
-
-      try {
-        const res = await fetch(FORMSPREE_ENTERTAINMENT_URL, {
-          method: "POST",
-          headers: { "Accept": "application/json" },
-          body: new FormData(form)
-        });
-
-        if (!res.ok) throw new Error("Submission failed");
-        showSuccessAndReturn();
-      } catch (err) {
-        alert("Submission failed. Please check internet and try again.");
+      if (!response.ok) {
+        throw new Error("Network response was not OK");
       }
-    });
-  </script>
+
+      // Optional: check Apps Script response { ok: true }
+      const result = await response.json().catch(() => ({}));
+      if (result.ok !== true) {
+        throw new Error("Server returned error");
+      }
+
+      showSuccessAndReturn();
+
+    } catch (error) {
+      alert("Submission failed. Please check the internet connection and try again.");
+      console.error(error);
+    }
+  });
+</script>
 </body>
 </html>
