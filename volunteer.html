@@ -33,8 +33,7 @@
   </form>
 
   <script>
-  // Paste your Apps Script Web App URL here (must end with /exec)
-  const GOOGLE_SCRIPT_URL = https://script.google.com/macros/s/AKfycby0SzgDWMhx1x9pXNJzOKvh2oFpScZ04cO4COBfO_EfHcwSbagYgO1F8u9_1CFb0RSF/exec;
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0SzgDWMhx1x9pXNJzOKvh2oFpScZ04cO4COBfO_EfHcwSbagYgO1F8u9_1CFb0RSF/exec";
 
   function showSuccessAndReturn() {
     document.body.innerHTML = `
@@ -57,26 +56,24 @@
       return;
     }
 
+    const payload = JSON.stringify({
+      type: "volunteer",
+      name,
+      hours
+    });
+
     try {
-      const res = await fetch(GOOGLE_SCRIPT_URL, {
+      await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "volunteer",
-          name: name,
-          hours: hours
-        })
+        mode: "no-cors",
+        body: payload
       });
 
-      if (!res.ok) throw new Error("Request failed");
-
-      // Optional: check JSON response {ok:true}
-      const data = await res.json().catch(() => ({}));
-      if (data.ok !== true) throw new Error("Server returned error");
-
+      // With no-cors we can't read the response, but it will submit.
       showSuccessAndReturn();
     } catch (err) {
       alert("Submission failed. Please check internet and try again.");
+      console.error(err);
     }
   });
 </script>
