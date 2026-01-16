@@ -112,8 +112,7 @@
     <button type="submit">Submit</button>
   </form>
 <script>
-  // 🔧 REPLACE this with your Google Apps Script Web App URL (must end with /exec)
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZkuOu7B81GYRBZhUSV1aTIeHAXyCFNmvRRnRNA0IwDFNdAMqMwLI6LFPjcunC-Xc/exec";
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0SzgDWMhx1x9pXNJzOKvh2oFpScZ04cO4COBfO_EfHcwSbagYgO1F8u9_1CFb0RSF/exec";
 
   function showSuccessAndReturn() {
     document.body.innerHTML = `
@@ -121,59 +120,41 @@
         <h3>Submitted successfully ✅</h3>
         <p>Returning to the home screen…</p>
       </div>`;
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 1500);
+    setTimeout(() => { window.location.href = "index.html"; }, 1500);
   }
 
   document.getElementById("entForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // Read values from the form
     const name = document.getElementById("name").value.trim();
     const ratingRaw = document.querySelector('input[name="rating"]:checked')?.value;
     const rating = Number(ratingRaw);
     const comment = document.getElementById("comment").value.trim();
 
-    // Basic validation
-    if (!name) {
-      alert("Please enter your name.");
-      return;
-    }
+    if (!name) { alert("Please enter your name."); return; }
     if (!ratingRaw || Number.isNaN(rating) || rating < 1 || rating > 5) {
       alert("Please select a rating.");
       return;
     }
 
+    const payload = JSON.stringify({
+      type: "entertainment",
+      name,
+      rating,
+      comment
+    });
+
     try {
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
+      await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          type: "entertainment",
-          name: name,
-          rating: rating,
-          comment: comment
-        })
+        mode: "no-cors",
+        body: payload
       });
 
-      if (!response.ok) {
-        throw new Error("Network response was not OK");
-      }
-
-      // Optional: check Apps Script response { ok: true }
-      const result = await response.json().catch(() => ({}));
-      if (result.ok !== true) {
-        throw new Error("Server returned error");
-      }
-
       showSuccessAndReturn();
-
-    } catch (error) {
-      alert("Submission failed. Please check the internet connection and try again.");
-      console.error(error);
+    } catch (err) {
+      alert("Submission failed. Please check internet and try again.");
+      console.error(err);
     }
   });
 </script>
