@@ -1,162 +1,77 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Rate Entertainment</title>
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
-    .top { display:flex; gap:12px; align-items:center; }
-    .top a { text-decoration:none; font-size:16px; }
-    h2 { margin: 0; }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rate Entertainment</title>
 
-    label.hdr { display:block; margin-top: 16px; font-weight: 750; }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-    input[type="text"], textarea {
-      width: 100%;
-      font-size: 18px;
-      padding: 12px;
-      margin-top: 8px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-    }
-
-    /* 5-point scale */
-    .scale {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .option input { display:none; }
-    .tile {
-      border: 2px solid #ccc;
-      border-radius: 14px;
-      padding: 14px 10px;
-      text-align: center;
-      user-select: none;
-      font-size: 16px;
-      line-height: 1.2;
-      cursor: pointer;
-    }
-    .emoji { font-size: 38px; display:block; margin-bottom: 8px; }
-
-    /* red -> yellow -> green */
-    .c1 { background: #ffd6d6; }
-    .c2 { background: #ffe2cc; }
-    .c3 { background: #fff2cc; }
-    .c4 { background: #e9f7d8; }
-    .c5 { background: #d9f7df; }
-
-    .option input:checked + .tile {
-      border-color: #000;
-      box-shadow: 0 0 0 2px rgba(0,0,0,0.08);
-    }
-
-    button {
-      margin-top: 18px;
-      width: 100%;
-      font-size: 20px;
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
-
-    .muted { color:#666; font-size:14px; margin-top:8px; }
-  </style>
+<style>
+  body{margin:0;font-family:"Work Sans",system-ui;background:#f6f8fb}
+  .page{max-width:860px;margin:0 auto;padding:30px}
+  .top{display:flex;gap:12px;align-items:center}
+  .top a{text-decoration:none;color:#005a96;font-weight:700}
+  .card{background:#fff;border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.08);padding:24px}
+  label{display:block;margin-top:16px;font-weight:800}
+  textarea,input{width:100%;padding:14px;font-size:18px;border-radius:12px;border:2px solid #ccc}
+  .scale{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px}
+  .tile{text-align:center;padding:12px;border-radius:12px;background:#eee;cursor:pointer}
+  input[type=radio]{display:none}
+  input:checked + .tile{outline:3px solid #0072bc}
+  button{margin-top:20px;width:100%;padding:16px;font-size:20px;border:none;border-radius:14px;font-weight:800;color:#fff;background:#0072bc}
+</style>
 </head>
+
 <body>
+<div class="page">
   <div class="top">
     <a href="index.html">← Back</a>
     <h2>Rate Entertainment</h2>
   </div>
 
-  <form id="entForm" autocomplete="off">
-    <label class="hdr" for="name">Name</label>
-    <input id="name" name="name" type="text" required />
+  <div class="card">
+    <form id="entForm">
+      <label>Name</label>
+      <input id="name" required>
 
-    <label class="hdr">How much did you enjoy it?</label>
-    <div class="scale">
-      <label class="option">
-        <input type="radio" name="rating" value="1" required>
-        <div class="tile c1"><span class="emoji">☹️</span>Very Poor</div>
-      </label>
+      <label>How was it?</label>
+      <div class="scale">
+        <label><input type="radio" name="rating" value="1"><div class="tile">☹️</div></label>
+        <label><input type="radio" name="rating" value="2"><div class="tile">🙁</div></label>
+        <label><input type="radio" name="rating" value="3"><div class="tile">😐</div></label>
+        <label><input type="radio" name="rating" value="4"><div class="tile">🙂</div></label>
+        <label><input type="radio" name="rating" value="5"><div class="tile">😄</div></label>
+      </div>
 
-      <label class="option">
-        <input type="radio" name="rating" value="2">
-        <div class="tile c2"><span class="emoji">🙁</span>Poor</div>
-      </label>
+      <label>Comment</label>
+      <textarea id="comment"></textarea>
 
-      <label class="option">
-        <input type="radio" name="rating" value="3">
-        <div class="tile c3"><span class="emoji">😐</span>Okay</div>
-      </label>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>
 
-      <label class="option">
-        <input type="radio" name="rating" value="4">
-        <div class="tile c4"><span class="emoji">🙂</span>Good</div>
-      </label>
-
-      <label class="option">
-        <input type="radio" name="rating" value="5">
-        <div class="tile c5"><span class="emoji">😄</span>Excellent</div>
-      </label>
-    </div>
-
-    <label class="hdr" for="comment">Comment</label>
-    <textarea id="comment" name="comment" rows="5" placeholder="Tell us what you liked or what could be better..."></textarea>
-
-    <p class="muted">Tap Submit to send your rating.</p>
-
-    <button type="submit">Submit</button>
-  </form>
 <script>
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0SzgDWMhx1x9pXNJzOKvh2oFpScZ04cO4COBfO_EfHcwSbagYgO1F8u9_1CFb0RSF/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0SzgDWMhx1x9pXNJzOKvh2oFpScZ04cO4COBfO_EfHcwSbagYgO1F8u9_1CFb0RSF/exec";
 
-  function showSuccessAndReturn() {
-    document.body.innerHTML = `
-      <div style="font-family:system-ui, -apple-system, sans-serif; padding:20px; max-width:800px; margin:0 auto;">
-        <h3>Submitted successfully ✅</h3>
-        <p>Returning to the home screen…</p>
-      </div>`;
-    setTimeout(() => { window.location.href = "index.html"; }, 1500);
-  }
+document.getElementById("entForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const name = document.getElementById("name").value.trim();
+  const rating = document.querySelector("input[name=rating]:checked")?.value;
+  const comment = document.getElementById("comment").value;
 
-  document.getElementById("entForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const name = document.getElementById("name").value.trim();
-    const ratingRaw = document.querySelector('input[name="rating"]:checked')?.value;
-    const rating = Number(ratingRaw);
-    const comment = document.getElementById("comment").value.trim();
-
-    if (!name) { alert("Please enter your name."); return; }
-    if (!ratingRaw || Number.isNaN(rating) || rating < 1 || rating > 5) {
-      alert("Please select a rating.");
-      return;
-    }
-
-    const payload = JSON.stringify({
-      type: "entertainment",
-      name,
-      rating,
-      comment
-    });
-
-    try {
-      await fetch(GOOGLE_SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        body: payload
-      });
-
-      showSuccessAndReturn();
-    } catch (err) {
-      alert("Submission failed. Please check internet and try again.");
-      console.error(err);
-    }
+  await fetch(GOOGLE_SCRIPT_URL,{
+    method:"POST",
+    mode:"no-cors",
+    body: JSON.stringify({type:"entertainment",name,rating,comment})
   });
+
+  document.body.innerHTML = "<h2 style='text-align:center;margin-top:40px'>Submitted successfully ✅</h2>";
+  setTimeout(()=>location.href="index.html",1500);
+});
 </script>
 </body>
 </html>
