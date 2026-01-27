@@ -1,26 +1,66 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Kiosk</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Community Portal</title>
+
+  <!-- Brand font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
   <style>
-    body { font-family: system-ui, -apple-system, sans-serif; padding: 24px; max-width: 700px; margin: 0 auto; }
-    h1 { margin: 0 0 18px; }
-    .card { border: 1px solid #ddd; border-radius: 14px; padding: 18px; margin: 14px 0; }
-    a.btn { display:block; text-align:center; text-decoration:none; font-size: 22px; padding: 18px; border-radius: 12px; border: 1px solid #ccc; }
-    a.btn:active { transform: scale(0.99); }
+    :root{
+      --acts-blue:#0072bc;
+      --acts-blue-dark:#005a96;
+      --acts-red:#ee2842;
+      --acts-burgundy:#980539;
+      --bg:#f6f8fb;
+      --card:#fff;
+      --shadow:0 10px 24px rgba(0,0,0,.08);
+      --radius:16px;
+    }
+
+    body{
+      margin:0;
+      font-family:"Work Sans",system-ui;
+      background:var(--bg);
+    }
+
+    .page{max-width:860px;margin:0 auto;padding:30px;}
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:30px;
+      text-align:center;
+    }
+
+    h2{font-size:32px;margin-bottom:20px}
+
+    .btn-link{
+      display:block;
+      margin-top:16px;
+      padding:16px;
+      border-radius:14px;
+      font-weight:800;
+      text-decoration:none;
+      color:#fff;
+      background:linear-gradient(180deg,var(--acts-blue),var(--acts-blue-dark));
+    }
+    .btn-link.secondary{
+      background:linear-gradient(180deg,var(--acts-red),var(--acts-burgundy));
+    }
   </style>
 </head>
 <body>
-  <h1>Welcome</h1>
-
-  <div class="card">
-    <a class="btn" href="volunteer.html">Log Volunteer Hours</a>
-  </div>
-
-  <div class="card">
-    <a class="btn" href="entertainment.html">Rate Entertainment</a>
+  <div class="page">
+    <div class="card">
+      <h2>Welcome</h2>
+      <a class="btn-link" href="volunteer.html">Log Volunteer Hours</a>
+      <a class="btn-link secondary" href="entertainment.html">Rate Entertainment</a>
+    </div>
   </div>
 </body>
 </html>
