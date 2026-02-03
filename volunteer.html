@@ -18,6 +18,49 @@
   label{display:block;margin-top:16px;font-weight:800}
   input{width:100%;padding:14px;font-size:18px;border-radius:12px;border:2px solid #ccc}
   button{margin-top:20px;width:100%;padding:16px;font-size:20px;border:none;border-radius:14px;font-weight:800;color:#fff;background:#0072bc}
+  .area-grid{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.area{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px solid rgba(0,90,150,.18);
+  background:#fff;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.area input{
+  display:none;
+}
+
+.dot{
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  border:3px solid #0072bc;
+  display:inline-block;
+  position:relative;
+}
+
+.area input:checked + .dot::after{
+  content:"";
+  position:absolute;
+  width:8px;
+  height:8px;
+  background:#0072bc;
+  border-radius:50%;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
 </style>
 </head>
 
