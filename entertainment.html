@@ -1,8 +1,8 @@
 <!doctype html>
 <html>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Rate Entertainment</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,12 +16,75 @@
   .top a{text-decoration:none;color:#005a96;font-weight:700}
   .card{background:#fff;border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.08);padding:24px}
   label{display:block;margin-top:16px;font-weight:800}
-  textarea,input{width:100%;padding:14px;font-size:18px;border-radius:12px;border:2px solid #ccc}
+  textarea,input{
+    width:100%;
+    padding:14px;
+    font-size:18px;
+    border-radius:12px;
+    border:2px solid #ccc;
+    box-sizing:border-box;
+  }
+
   .scale{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px}
-  .tile{text-align:center;padding:12px;border-radius:12px;background:#eee;cursor:pointer}
+  .tile{
+    text-align:center;
+    padding:14px 10px;
+    border-radius:14px;
+    background:#eee;
+    cursor:pointer;
+    user-select:none;
+    min-height:86px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:6px;
+  }
+  .emoji{font-size:34px; line-height:1}
   input[type=radio]{display:none}
-  input:checked + .tile{outline:3px solid #0072bc}
-  button{margin-top:20px;width:100%;padding:16px;font-size:20px;border:none;border-radius:14px;font-weight:800;color:#fff;background:#0072bc}
+  input:checked + .tile{outline:3px solid #0072bc;background:#eaf4ff}
+
+  button{
+    margin-top:20px;
+    width:100%;
+    padding:16px;
+    font-size:20px;
+    border:none;
+    border-radius:14px;
+    font-weight:800;
+    color:#fff;
+    background:#0072bc;
+    cursor:pointer;
+  }
+
+  /* Processing overlay */
+  #processingOverlay{
+    position:fixed;
+    inset:0;
+    background:rgba(255,255,255,0.9);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    z-index:9999;
+  }
+
+  .spinner{
+    width:40px;
+    height:40px;
+    border:4px solid #ddd;
+    border-top:4px solid #0072bc;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin-bottom:15px;
+  }
+
+  @keyframes spin{
+    to{transform:rotate(360deg);}
+  }
+
+  @media(max-width:720px){
+    .scale{grid-template-columns:repeat(2,1fr);}
+  }
 </style>
 </head>
 
@@ -33,45 +96,91 @@
   </div>
 
   <div class="card">
-    <form id="entForm">
-      <label>Name</label>
-      <input id="name" required>
+    <form id="entForm" autocomplete="off">
 
-      <label>How was it?</label>
+      <label>Name</label>
+      <input id="name" name="name" required>
+
+      <label>How much did you enjoy it?</label>
       <div class="scale">
-        <label><input type="radio" name="rating" value="1"><div class="tile">☹️</div></label>
-        <label><input type="radio" name="rating" value="2"><div class="tile">🙁</div></label>
-        <label><input type="radio" name="rating" value="3"><div class="tile">😐</div></label>
-        <label><input type="radio" name="rating" value="4"><div class="tile">🙂</div></label>
-        <label><input type="radio" name="rating" value="5"><div class="tile">😄</div></label>
+        <label>
+          <input type="radio" name="rating" value="1" required>
+          <div class="tile"><div class="emoji">☹️</div><div>Very Poor</div></div>
+        </label>
+        <label>
+          <input type="radio" name="rating" value="2">
+          <div class="tile"><div class="emoji">🙁</div><div>Poor</div></div>
+        </label>
+        <label>
+          <input type="radio" name="rating" value="3">
+          <div class="tile"><div class="emoji">😐</div><div>Okay</div></div>
+        </label>
+        <label>
+          <input type="radio" name="rating" value="4">
+          <div class="tile"><div class="emoji">🙂</div><div>Good</div></div>
+        </label>
+        <label>
+          <input type="radio" name="rating" value="5">
+          <div class="tile"><div class="emoji">😄</div><div>Excellent</div></div>
+        </label>
       </div>
 
       <label>Comment</label>
-      <textarea id="comment"></textarea>
+      <textarea id="comment" name="comment" rows="5" placeholder="Tell us what you liked or what could be better..."></textarea>
 
       <button type="submit">Submit</button>
     </form>
   </div>
 </div>
 
+<div id="processingOverlay">
+  <div class="spinner"></div>
+  <h3>Processing...</h3>
+</div>
+
 <script>
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0SzgDWMhx1x9pXNJzOKvh2oFpScZ04cO4COBfO_EfHcwSbagYgO1F8u9_1CFb0RSF/exec";
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0SzgDWMhx1x9pXNJzOKvh2oFpScZ04cO4COBfO_EfHcwSbagYgO1F8u9_1CFb0RSF/exec";
 
-document.getElementById("entForm").addEventListener("submit", async e => {
-  e.preventDefault();
-  const name = document.getElementById("name").value.trim();
-  const rating = document.querySelector("input[name=rating]:checked")?.value;
-  const comment = document.getElementById("comment").value;
+  document.getElementById("entForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  await fetch(GOOGLE_SCRIPT_URL,{
-    method:"POST",
-    mode:"no-cors",
-    body: JSON.stringify({type:"entertainment",name,rating,comment})
+    const name = document.getElementById("name").value.trim();
+    const rating = document.querySelector("input[name=rating]:checked")?.value;
+    const comment = document.getElementById("comment").value.trim();
+
+    if (!name) { alert("Please enter your name."); return; }
+    if (!rating) { alert("Please select a rating."); return; }
+
+    const overlay = document.getElementById("processingOverlay");
+    const btn = e.target.querySelector("button");
+    btn.disabled = true;
+    btn.style.opacity = "0.6";
+    overlay.style.display = "flex";
+
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify({
+          type: "entertainment",
+          name,
+          rating,
+          comment
+        })
+      });
+
+      document.body.innerHTML =
+        "<h2 style='text-align:center;margin-top:40px'>Submitted successfully ✅</h2>";
+      setTimeout(() => location.href = "index.html", 1500);
+
+    } catch (err) {
+      alert("Submission failed. Please try again.");
+      btn.disabled = false;
+      btn.style.opacity = "1";
+      overlay.style.display = "none";
+      console.error(err);
+    }
   });
-
-  document.body.innerHTML = "<h2 style='text-align:center;margin-top:40px'>Submitted successfully ✅</h2>";
-  setTimeout(()=>location.href="index.html",1500);
-});
 </script>
 </body>
 </html>
