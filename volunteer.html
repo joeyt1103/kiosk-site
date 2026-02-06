@@ -10,36 +10,35 @@
 <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-  body{margin:0;font-family:"Work Sans",system-ui;background:#f6f8fb}
-  .page{max-width:860px;margin:0 auto;padding:30px}
-  .top{display:flex;gap:12px;align-items:center}
-  .top a{text-decoration:none;color:#005a96;font-weight:700}
-  .card{background:#fff;border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.08);padding:24px}
-  label{display:block;margin-top:16px;font-weight:800}
-  input{width:100%;padding:14px;font-size:18px;border-radius:12px;border:2px solid #ccc}
-  button{margin-top:20px;width:100%;padding:16px;font-size:20px;border:none;border-radius:14px;font-weight:800;color:#fff;background:#0072bc}
-  .area-grid{
+body{margin:0;font-family:"Work Sans",system-ui;background:#f6f8fb}
+.page{max-width:860px;margin:0 auto;padding:30px}
+.top{display:flex;gap:12px;align-items:center}
+.top a{text-decoration:none;color:#005a96;font-weight:700}
+.card{background:#fff;border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.08);padding:24px}
+label{display:block;margin-top:16px;font-weight:800}
+input{width:100%;padding:14px;font-size:18px;border-radius:12px;border:2px solid #ccc}
+button{margin-top:20px;width:100%;padding:16px;font-size:20px;border:none;border-radius:14px;font-weight:800;color:#fff;background:#0072bc;cursor:pointer}
+
+.area-grid{
   display:grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-top: 10px;
+  gap:10px;
+  margin-top:10px;
 }
 
 .area{
   display:flex;
   align-items:center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 2px solid rgba(0,90,150,.18);
+  gap:10px;
+  padding:10px 12px;
+  border-radius:12px;
+  border:2px solid rgba(0,90,150,.18);
   background:#fff;
   cursor:pointer;
   font-weight:600;
 }
 
-.area input{
-  display:none;
-}
+.area input{display:none;}
 
 .dot{
   width:18px;
@@ -61,6 +60,11 @@
   left:50%;
   transform:translate(-50%,-50%);
 }
+
+#otherBox{
+  display:none;
+  margin-top:12px;
+}
 </style>
 </head>
 
@@ -73,60 +77,76 @@
 
   <div class="card">
     <form id="volForm">
+
       <label>Name</label>
       <input id="name" required>
 
       <label>Hours volunteered</label>
       <input id="hours" type="number" step="0.25" min="0" required>
-      <hr style="margin:24px 0; border:none; border-top:1px solid #ddd;">
-
-<label style="color:#666;font-weight:600;">Volunteer Area (for reference only)</label>
-
-<div class="area-grid">
-  <label class="area">
-    <input type="radio" name="area" checked>
-    <span class="dot"></span>
-    Life Care Office
-  </label>
-
-  <label class="area">
-    <input type="radio" name="area">
-    <span class="dot"></span>
-    Resident Services
-  </label>
-
-  <label class="area">
-    <input type="radio" name="area">
-    <span class="dot"></span>
-    Willow Brook Court
-  </label>
-
-  <label class="area">
-    <input type="radio" name="area">
-    <span class="dot"></span>
-    Oak Bridge Terrace
-  </label>
-
-  <label class="area">
-    <input type="radio" name="area">
-    <span class="dot"></span>
-    Administration
-  </label>
-
-  <label class="area">
-    <input type="radio" name="area">
-    <span class="dot"></span>
-    Off Campus
-  </label>
-
-  <label class="area">
-    <input type="radio" name="area">
-    <span class="dot"></span>
-    Chaplain
-  </label>
-</div>
 
       <button type="submit">Submit</button>
+
+      <hr style="margin:24px 0; border:none; border-top:1px solid #ddd;">
+
+      <label style="color:#666;font-weight:600;">Volunteer Area (for reference only)</label>
+
+      <div class="area-grid">
+
+        <label class="area">
+          <input type="radio" name="area" checked>
+          <span class="dot"></span>
+          Life Care Office
+        </label>
+
+        <label class="area">
+          <input type="radio" name="area">
+          <span class="dot"></span>
+          Resident Services
+        </label>
+
+        <label class="area">
+          <input type="radio" name="area">
+          <span class="dot"></span>
+          Willow Brook Court
+        </label>
+
+        <label class="area">
+          <input type="radio" name="area">
+          <span class="dot"></span>
+          Oak Bridge Terrace
+        </label>
+
+        <label class="area">
+          <input type="radio" name="area">
+          <span class="dot"></span>
+          Administration
+        </label>
+
+        <label class="area">
+          <input type="radio" name="area">
+          <span class="dot"></span>
+          Off Campus
+        </label>
+
+        <label class="area">
+          <input type="radio" name="area">
+          <span class="dot"></span>
+          Chaplain
+        </label>
+
+        <!-- OTHER OPTION -->
+        <label class="area">
+          <input type="radio" name="area" id="otherOption">
+          <span class="dot"></span>
+          Other
+        </label>
+
+      </div>
+
+      <div id="otherBox">
+        <input type="text" id="otherText" placeholder="Please specify...">
+      </div>
+
     </form>
   </div>
 </div>
@@ -134,18 +154,46 @@
 <script>
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0SzgDWMhx1x9pXNJzOKvh2oFpScZ04cO4COBfO_EfHcwSbagYgO1F8u9_1CFb0RSF/exec";
 
-document.getElementById("volForm").addEventListener("submit", async e => {
+/* Show / hide Other textbox */
+const areaRadios = document.querySelectorAll('input[name="area"]');
+const otherOption = document.getElementById("otherOption");
+const otherBox = document.getElementById("otherBox");
+
+areaRadios.forEach(radio=>{
+  radio.addEventListener("change", ()=>{
+    if(otherOption.checked){
+      otherBox.style.display="block";
+    } else {
+      otherBox.style.display="none";
+    }
+  });
+});
+
+/* Submit handler */
+document.getElementById("volForm").addEventListener("submit", async e=>{
   e.preventDefault();
-  const name = nameEl = document.getElementById("name").value.trim();
+
+  const name = document.getElementById("name").value.trim();
   const hours = Number(document.getElementById("hours").value);
+
+  if(!name || isNaN(hours) || hours < 0){
+    alert("Please enter valid information.");
+    return;
+  }
 
   await fetch(GOOGLE_SCRIPT_URL,{
     method:"POST",
     mode:"no-cors",
-    body: JSON.stringify({type:"volunteer",name,hours})
+    body: JSON.stringify({
+      type:"volunteer",
+      name,
+      hours
+    })
   });
 
-  document.body.innerHTML = "<h2 style='text-align:center;margin-top:40px'>Submitted successfully ✅</h2>";
+  document.body.innerHTML =
+    "<h2 style='text-align:center;margin-top:40px'>Submitted successfully ✅</h2>";
+
   setTimeout(()=>location.href="index.html",1500);
 });
 </script>
