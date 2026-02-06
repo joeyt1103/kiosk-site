@@ -16,9 +16,28 @@ body{margin:0;font-family:"Work Sans",system-ui;background:#f6f8fb}
 .top a{text-decoration:none;color:#005a96;font-weight:700}
 .card{background:#fff;border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.08);padding:24px}
 label{display:block;margin-top:16px;font-weight:800}
-input{width:100%;padding:14px;font-size:18px;border-radius:12px;border:2px solid #ccc;box-sizing:border-box}
-button{margin-top:20px;width:100%;padding:16px;font-size:20px;border:none;border-radius:14px;font-weight:800;color:#fff;background:#0072bc;cursor:pointer}
+input, select{
+  width:100%;
+  padding:14px;
+  font-size:18px;
+  border-radius:12px;
+  border:2px solid #ccc;
+  box-sizing:border-box;
+}
+button{
+  margin-top:20px;
+  width:100%;
+  padding:16px;
+  font-size:20px;
+  border:none;
+  border-radius:14px;
+  font-weight:800;
+  color:#fff;
+  background:#0072bc;
+  cursor:pointer;
+}
 
+/* Area selector */
 .area-grid{
   display:grid;
   grid-template-columns: repeat(2, 1fr);
@@ -62,20 +81,33 @@ button{margin-top:20px;width:100%;padding:16px;font-size:20px;border:none;border
   transform:translate(-50%,-50%);
 }
 
-/* Sub-area section */
-#subAreaWrap{display:none;margin-top:14px;}
-select{
-  width:100%;
-  padding:14px;
-  font-size:18px;
-  border-radius:12px;
-  border:2px solid #ccc;
-  background:#fff;
-  box-sizing:border-box;
+#subAreaWrap, #otherAreaBox, #otherSubBox{display:none;margin-top:14px;}
+
+/* Processing overlay */
+#processingOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(255,255,255,0.9);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  z-index:9999;
 }
 
-.helper{color:#666;font-weight:600;margin-top:0}
-#otherAreaBox, #otherSubBox{display:none;margin-top:12px;}
+.spinner{
+  width:40px;
+  height:40px;
+  border:4px solid #ddd;
+  border-top:4px solid #0072bc;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin-bottom:15px;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg);}
+}
 </style>
 </head>
 
@@ -99,7 +131,7 @@ select{
 
       <hr style="margin:24px 0; border:none; border-top:1px solid #ddd;">
 
-      <label class="helper">Volunteer Area (for reference only)</label>
+      <label style="color:#666;font-weight:600;">Volunteer Area (for reference only)</label>
 
       <div class="area-grid">
         <label class="area">
@@ -107,43 +139,36 @@ select{
           <span class="dot"></span>
           Life Care Office
         </label>
-
         <label class="area">
           <input type="radio" name="area" value="Resident Services">
           <span class="dot"></span>
           Resident Services
         </label>
-
         <label class="area">
           <input type="radio" name="area" value="Willow Brook Court">
           <span class="dot"></span>
           Willow Brook Court
         </label>
-
         <label class="area">
           <input type="radio" name="area" value="Oak Bridge Terrace">
           <span class="dot"></span>
           Oak Bridge Terrace
         </label>
-
         <label class="area">
           <input type="radio" name="area" value="Administration">
           <span class="dot"></span>
           Administration
         </label>
-
         <label class="area">
           <input type="radio" name="area" value="Off Campus">
           <span class="dot"></span>
           Off Campus
         </label>
-
         <label class="area">
           <input type="radio" name="area" value="Chaplain">
           <span class="dot"></span>
           Chaplain
         </label>
-
         <label class="area">
           <input type="radio" name="area" value="Other Area" id="otherAreaOption">
           <span class="dot"></span>
@@ -151,19 +176,16 @@ select{
         </label>
       </div>
 
-      <!-- Other AREA textbox -->
       <div id="otherAreaBox">
         <input type="text" id="otherAreaText" placeholder="Please specify the volunteer area...">
       </div>
 
-      <!-- Sub-area dropdown (shows when a real area is selected) -->
       <div id="subAreaWrap">
-        <label class="helper" style="margin-top:16px;">Sub-Area (for reference only)</label>
+        <label style="font-weight:600;">Sub-Area (for reference only)</label>
         <select id="subAreaSelect">
           <option value="">Select a sub-area…</option>
         </select>
 
-        <!-- Other SUB-AREA textbox -->
         <div id="otherSubBox">
           <input type="text" id="otherSubText" placeholder="Please specify the activity...">
         </div>
@@ -173,155 +195,84 @@ select{
   </div>
 </div>
 
+<div id="processingOverlay">
+  <div class="spinner"></div>
+  <h3>Processing...</h3>
+</div>
+
 <script>
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0SzgDWMhx1x9pXNJzOKvh2oFpScZ04cO4COBfO_EfHcwSbagYgO1F8u9_1CFb0RSF/exec";
 
-/**
- * Area -> Sub-area mapping (based on your paper forms)
- */
 const SUB_AREAS = {
-  "Life Care Office": [
-    "Clerical",
-    "Luncheon",
-    "Tour Guide",
-    "Hosting",
-    "Show Apartment"
-  ],
-  "Resident Services": [
-    "Acts TV",
-    "Assist with Entertainment",
-    "Lead Activities",
-    "Newsletter",
-    "Assist Life Engagement"
-  ],
-  "Willow Brook Court": [
-    "Assist Staff",
-    "Activities",
-    "Mail Distribution",
-    "Assist Residents",
-    "Volunteer Visits",
-    "Escort/Transport Residents"
-  ],
-  "Oak Bridge Terrace": [
-    "Assist Staff",
-    "Activities",
-    "Hydration Program",
-    "Mail Distribution",
-    "Volunteer Visits",
-    "Escort/Transport Residents"
-  ],
-  "Administration": [
-    "In-house Mail",
-    "Distribution",
-    "Clerical",
-    "Packages",
-    "Gift Shop",
-    "Other"
-  ],
-  "Off Campus": [
-    "Volunteer Work Done Outside of Acts"
-  ],
-  "Chaplain": [
-    "Teaching",
-    "Preaching",
-    "Music Ministry",
-    "Spiritual Committee",
-    "Service Assistant",
-    "Card/Flower Distribution",
-    "Other"
-  ]
+  "Life Care Office":["Clerical","Luncheon","Tour Guide","Hosting","Show Apartment"],
+  "Resident Services":["Acts TV","Assist with Entertainment","Lead Activities","Newsletter","Assist Life Engagement"],
+  "Willow Brook Court":["Assist Staff","Activities","Mail Distribution","Assist Residents","Volunteer Visits","Escort/Transport Residents"],
+  "Oak Bridge Terrace":["Assist Staff","Activities","Hydration Program","Mail Distribution","Volunteer Visits","Escort/Transport Residents"],
+  "Administration":["In-house Mail","Distribution","Clerical","Packages","Gift Shop","Other"],
+  "Off Campus":["Volunteer Work Done Outside of Acts"],
+  "Chaplain":["Teaching","Preaching","Music Ministry","Spiritual Committee","Service Assistant","Card/Flower Distribution","Other"]
 };
 
-const areaRadios = document.querySelectorAll('input[name="area"]');
-const otherAreaOption = document.getElementById("otherAreaOption");
-const otherAreaBox = document.getElementById("otherAreaBox");
+const areaRadios=document.querySelectorAll('input[name="area"]');
+const subAreaWrap=document.getElementById("subAreaWrap");
+const subAreaSelect=document.getElementById("subAreaSelect");
+const otherAreaBox=document.getElementById("otherAreaBox");
+const otherAreaOption=document.getElementById("otherAreaOption");
+const otherSubBox=document.getElementById("otherSubBox");
 
-const subAreaWrap = document.getElementById("subAreaWrap");
-const subAreaSelect = document.getElementById("subAreaSelect");
-
-const otherSubBox = document.getElementById("otherSubBox");
-const otherSubText = document.getElementById("otherSubText");
-
-function populateSubAreas(areaName){
-  // Reset dropdown
-  subAreaSelect.innerHTML = '<option value="">Select a sub-area…</option>';
-
-  const list = SUB_AREAS[areaName] || [];
-
-  list.forEach(item=>{
-    const opt = document.createElement("option");
-    opt.value = item;
-    opt.textContent = item;
+function populateSubAreas(area){
+  subAreaSelect.innerHTML='<option value="">Select a sub-area…</option>';
+  (SUB_AREAS[area]||[]).forEach(item=>{
+    const opt=document.createElement("option");
+    opt.value=item;
+    opt.textContent=item;
     subAreaSelect.appendChild(opt);
   });
 }
 
 function handleAreaChange(){
-  const selected = document.querySelector('input[name="area"]:checked')?.value;
-
-  // If "Other Area" selected:
-  if (selected === "Other Area"){
-    otherAreaBox.style.display = "block";
-    subAreaWrap.style.display = "none";
-    otherSubBox.style.display = "none";
-    subAreaSelect.value = "";
+  const selected=document.querySelector('input[name="area"]:checked')?.value;
+  if(selected==="Other Area"){
+    otherAreaBox.style.display="block";
+    subAreaWrap.style.display="none";
     return;
   }
-
-  // Normal area selected:
-  otherAreaBox.style.display = "none";
-
-  if (selected && SUB_AREAS[selected]){
+  otherAreaBox.style.display="none";
+  if(selected && SUB_AREAS[selected]){
     populateSubAreas(selected);
-    subAreaWrap.style.display = "block";
-    otherSubBox.style.display = "none";
-    otherSubText.value = "";
+    subAreaWrap.style.display="block";
   } else {
-    subAreaWrap.style.display = "none";
-    otherSubBox.style.display = "none";
-    otherSubText.value = "";
+    subAreaWrap.style.display="none";
   }
 }
 
-subAreaSelect.addEventListener("change", ()=>{
-  const val = subAreaSelect.value;
-  if (val === "Other"){
-    otherSubBox.style.display = "block";
-  } else {
-    otherSubBox.style.display = "none";
-    otherSubText.value = "";
-  }
+subAreaSelect.addEventListener("change",()=>{
+  otherSubBox.style.display=subAreaSelect.value==="Other"?"block":"none";
 });
 
-areaRadios.forEach(r=> r.addEventListener("change", handleAreaChange));
-// Initialize on load
+areaRadios.forEach(r=>r.addEventListener("change",handleAreaChange));
 handleAreaChange();
 
-/* Submit handler (still only sends name + hours) */
-document.getElementById("volForm").addEventListener("submit", async e=>{
+/* Submit */
+document.getElementById("volForm").addEventListener("submit",async e=>{
   e.preventDefault();
+  const name=document.getElementById("name").value.trim();
+  const hours=Number(document.getElementById("hours").value);
+  if(!name||isNaN(hours)||hours<0){alert("Please enter valid information.");return;}
 
-  const name = document.getElementById("name").value.trim();
-  const hours = Number(document.getElementById("hours").value);
-
-  if(!name || isNaN(hours) || hours < 0){
-    alert("Please enter valid information.");
-    return;
-  }
+  const overlay=document.getElementById("processingOverlay");
+  const btn=e.target.querySelector("button");
+  btn.disabled=true;
+  btn.style.opacity="0.6";
+  overlay.style.display="flex";
 
   await fetch(GOOGLE_SCRIPT_URL,{
     method:"POST",
     mode:"no-cors",
-    body: JSON.stringify({
-      type:"volunteer",
-      name,
-      hours
-    })
+    body:JSON.stringify({type:"volunteer",name,hours})
   });
 
-  document.body.innerHTML =
-    "<h2 style='text-align:center;margin-top:40px'>Submitted successfully ✅</h2>";
-
+  document.body.innerHTML="<h2 style='text-align:center;margin-top:40px'>Submitted successfully ✅</h2>";
   setTimeout(()=>location.href="index.html",1500);
 });
 </script>
