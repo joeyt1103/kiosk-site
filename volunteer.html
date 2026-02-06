@@ -16,7 +16,7 @@ body{margin:0;font-family:"Work Sans",system-ui;background:#f6f8fb}
 .top a{text-decoration:none;color:#005a96;font-weight:700}
 .card{background:#fff;border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.08);padding:24px}
 label{display:block;margin-top:16px;font-weight:800}
-input{width:100%;padding:14px;font-size:18px;border-radius:12px;border:2px solid #ccc}
+input{width:100%;padding:14px;font-size:18px;border-radius:12px;border:2px solid #ccc;box-sizing:border-box}
 button{margin-top:20px;width:100%;padding:16px;font-size:20px;border:none;border-radius:14px;font-weight:800;color:#fff;background:#0072bc;cursor:pointer}
 
 .area-grid{
@@ -36,6 +36,7 @@ button{margin-top:20px;width:100%;padding:16px;font-size:20px;border:none;border
   background:#fff;
   cursor:pointer;
   font-weight:600;
+  user-select:none;
 }
 
 .area input{display:none;}
@@ -61,10 +62,20 @@ button{margin-top:20px;width:100%;padding:16px;font-size:20px;border:none;border
   transform:translate(-50%,-50%);
 }
 
-#otherBox{
-  display:none;
-  margin-top:12px;
+/* Sub-area section */
+#subAreaWrap{display:none;margin-top:14px;}
+select{
+  width:100%;
+  padding:14px;
+  font-size:18px;
+  border-radius:12px;
+  border:2px solid #ccc;
+  background:#fff;
+  box-sizing:border-box;
 }
+
+.helper{color:#666;font-weight:600;margin-top:0}
+#otherAreaBox, #otherSubBox{display:none;margin-top:12px;}
 </style>
 </head>
 
@@ -88,63 +99,74 @@ button{margin-top:20px;width:100%;padding:16px;font-size:20px;border:none;border
 
       <hr style="margin:24px 0; border:none; border-top:1px solid #ddd;">
 
-      <label style="color:#666;font-weight:600;">Volunteer Area (for reference only)</label>
+      <label class="helper">Volunteer Area (for reference only)</label>
 
       <div class="area-grid">
-
         <label class="area">
-          <input type="radio" name="area" checked>
+          <input type="radio" name="area" value="Life Care Office" checked>
           <span class="dot"></span>
           Life Care Office
         </label>
 
         <label class="area">
-          <input type="radio" name="area">
+          <input type="radio" name="area" value="Resident Services">
           <span class="dot"></span>
           Resident Services
         </label>
 
         <label class="area">
-          <input type="radio" name="area">
+          <input type="radio" name="area" value="Willow Brook Court">
           <span class="dot"></span>
           Willow Brook Court
         </label>
 
         <label class="area">
-          <input type="radio" name="area">
+          <input type="radio" name="area" value="Oak Bridge Terrace">
           <span class="dot"></span>
           Oak Bridge Terrace
         </label>
 
         <label class="area">
-          <input type="radio" name="area">
+          <input type="radio" name="area" value="Administration">
           <span class="dot"></span>
           Administration
         </label>
 
         <label class="area">
-          <input type="radio" name="area">
+          <input type="radio" name="area" value="Off Campus">
           <span class="dot"></span>
           Off Campus
         </label>
 
         <label class="area">
-          <input type="radio" name="area">
+          <input type="radio" name="area" value="Chaplain">
           <span class="dot"></span>
           Chaplain
         </label>
 
-        <!-- OTHER OPTION -->
         <label class="area">
-          <input type="radio" name="area" id="otherOption">
+          <input type="radio" name="area" value="Other Area" id="otherAreaOption">
           <span class="dot"></span>
           Other
         </label>
-
       </div>
 
-      <div id="otherBox">
-        <input type="text" id="otherText" placeholder="Please specify...">
+      <!-- Other AREA textbox -->
+      <div id="otherAreaBox">
+        <input type="text" id="otherAreaText" placeholder="Please specify the volunteer area...">
+      </div>
+
+      <!-- Sub-area dropdown (shows when a real area is selected) -->
+      <div id="subAreaWrap">
+        <label class="helper" style="margin-top:16px;">Sub-Area (for reference only)</label>
+        <select id="subAreaSelect">
+          <option value="">Select a sub-area…</option>
+        </select>
+
+        <!-- Other SUB-AREA textbox -->
+        <div id="otherSubBox">
+          <input type="text" id="otherSubText" placeholder="Please specify the activity...">
+        </div>
       </div>
 
     </form>
@@ -154,22 +176,128 @@ button{margin-top:20px;width:100%;padding:16px;font-size:20px;border:none;border
 <script>
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0SzgDWMhx1x9pXNJzOKvh2oFpScZ04cO4COBfO_EfHcwSbagYgO1F8u9_1CFb0RSF/exec";
 
-/* Show / hide Other textbox */
-const areaRadios = document.querySelectorAll('input[name="area"]');
-const otherOption = document.getElementById("otherOption");
-const otherBox = document.getElementById("otherBox");
+/**
+ * Area -> Sub-area mapping (based on your paper forms)
+ */
+const SUB_AREAS = {
+  "Life Care Office": [
+    "Clerical",
+    "Luncheon",
+    "Tour Guide",
+    "Hosting",
+    "Show Apartment"
+  ],
+  "Resident Services": [
+    "Acts TV",
+    "Assist with Entertainment",
+    "Lead Activities",
+    "Newsletter",
+    "Assist Life Engagement"
+  ],
+  "Willow Brook Court": [
+    "Assist Staff",
+    "Activities",
+    "Mail Distribution",
+    "Assist Residents",
+    "Volunteer Visits",
+    "Escort/Transport Residents"
+  ],
+  "Oak Bridge Terrace": [
+    "Assist Staff",
+    "Activities",
+    "Hydration Program",
+    "Mail Distribution",
+    "Volunteer Visits",
+    "Escort/Transport Residents"
+  ],
+  "Administration": [
+    "In-house Mail",
+    "Distribution",
+    "Clerical",
+    "Packages",
+    "Gift Shop",
+    "Other"
+  ],
+  "Off Campus": [
+    "Volunteer Work Done Outside of Acts"
+  ],
+  "Chaplain": [
+    "Teaching",
+    "Preaching",
+    "Music Ministry",
+    "Spiritual Committee",
+    "Service Assistant",
+    "Card/Flower Distribution",
+    "Other"
+  ]
+};
 
-areaRadios.forEach(radio=>{
-  radio.addEventListener("change", ()=>{
-    if(otherOption.checked){
-      otherBox.style.display="block";
-    } else {
-      otherBox.style.display="none";
-    }
+const areaRadios = document.querySelectorAll('input[name="area"]');
+const otherAreaOption = document.getElementById("otherAreaOption");
+const otherAreaBox = document.getElementById("otherAreaBox");
+
+const subAreaWrap = document.getElementById("subAreaWrap");
+const subAreaSelect = document.getElementById("subAreaSelect");
+
+const otherSubBox = document.getElementById("otherSubBox");
+const otherSubText = document.getElementById("otherSubText");
+
+function populateSubAreas(areaName){
+  // Reset dropdown
+  subAreaSelect.innerHTML = '<option value="">Select a sub-area…</option>';
+
+  const list = SUB_AREAS[areaName] || [];
+
+  list.forEach(item=>{
+    const opt = document.createElement("option");
+    opt.value = item;
+    opt.textContent = item;
+    subAreaSelect.appendChild(opt);
   });
+}
+
+function handleAreaChange(){
+  const selected = document.querySelector('input[name="area"]:checked')?.value;
+
+  // If "Other Area" selected:
+  if (selected === "Other Area"){
+    otherAreaBox.style.display = "block";
+    subAreaWrap.style.display = "none";
+    otherSubBox.style.display = "none";
+    subAreaSelect.value = "";
+    return;
+  }
+
+  // Normal area selected:
+  otherAreaBox.style.display = "none";
+
+  if (selected && SUB_AREAS[selected]){
+    populateSubAreas(selected);
+    subAreaWrap.style.display = "block";
+    otherSubBox.style.display = "none";
+    otherSubText.value = "";
+  } else {
+    subAreaWrap.style.display = "none";
+    otherSubBox.style.display = "none";
+    otherSubText.value = "";
+  }
+}
+
+subAreaSelect.addEventListener("change", ()=>{
+  const val = subAreaSelect.value;
+  if (val === "Other"){
+    otherSubBox.style.display = "block";
+  } else {
+    otherSubBox.style.display = "none";
+    otherSubText.value = "";
+  }
 });
 
-/* Submit handler */
+areaRadios.forEach(r=> r.addEventListener("change", handleAreaChange));
+// Initialize on load
+handleAreaChange();
+
+/* Submit handler (still only sends name + hours) */
 document.getElementById("volForm").addEventListener("submit", async e=>{
   e.preventDefault();
 
