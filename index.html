@@ -1,65 +1,207 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Community Portal</title>
 
-  <!-- Brand font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
     :root{
-      --acts-blue:#0072bc;
-      --acts-blue-dark:#005a96;
-      --acts-red:#ee2842;
-      --acts-burgundy:#980539;
-      --bg:#f6f8fb;
-      --card:#fff;
-      --shadow:0 10px 24px rgba(0,0,0,.08);
-      --radius:16px;
+      --blue:#007AFF;
+      --blue-dark:#0062CC;
+      --red:#FF3B30;
+      --red-dark:#D63029;
+      --bg:#F2F2F7;
+      --card:#FFFFFF;
+      --text:#1C1C1E;
+      --text-secondary:#8E8E93;
+      --shadow:0 2px 16px rgba(0,0,0,0.08), 0 0 1px rgba(0,0,0,0.1);
+      --radius:20px;
+      --safe-top:env(safe-area-inset-top, 0px);
+      --safe-bottom:env(safe-area-inset-bottom, 0px);
     }
 
     body{
-      margin:0;
-      font-family:"Work Sans",system-ui;
+      font-family:"Inter","SF Pro Display","SF Pro Text",-apple-system,system-ui,sans-serif;
       background:var(--bg);
+      color:var(--text);
+      min-height:100dvh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:32px 24px;
+      padding-top:calc(32px + var(--safe-top));
+      padding-bottom:calc(32px + var(--safe-bottom));
+      -webkit-font-smoothing:antialiased;
+      -webkit-tap-highlight-color:transparent;
+      user-select:none;
     }
 
-    .page{max-width:860px;margin:0 auto;padding:30px;}
-    .card{
+    .page{
+      width:100%;
+      max-width:560px;
+      opacity:0;
+      transform:translateY(20px) scale(0.98);
+      animation:pageIn 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+
+    @keyframes pageIn{
+      to{opacity:1;transform:translateY(0) scale(1)}
+    }
+
+    .greeting{
+      text-align:center;
+      margin-bottom:40px;
+      opacity:0;
+      animation:fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.15s forwards;
+    }
+
+    @keyframes fadeUp{
+      from{opacity:0;transform:translateY(12px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    .greeting h1{
+      font-size:36px;
+      font-weight:800;
+      letter-spacing:-0.5px;
+      margin-bottom:8px;
+      background:linear-gradient(135deg,var(--blue),#5856D6);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+
+    .greeting p{
+      font-size:20px;
+      color:var(--text-secondary);
+      font-weight:500;
+    }
+
+    .actions{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .action-card{
+      display:flex;
+      align-items:center;
+      gap:20px;
+      padding:24px 28px;
       background:var(--card);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-      padding:30px;
-      text-align:center;
-    }
-
-    h2{font-size:32px;margin-bottom:20px}
-
-    .btn-link{
-      display:block;
-      margin-top:16px;
-      padding:16px;
-      border-radius:14px;
-      font-weight:800;
       text-decoration:none;
-      color:#fff;
-      background:linear-gradient(180deg,var(--acts-blue),var(--acts-blue-dark));
+      color:var(--text);
+      transition:transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
+      -webkit-tap-highlight-color:transparent;
+      opacity:0;
+      animation:cardIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
     }
-    .btn-link.secondary{
-      background:linear-gradient(180deg,var(--acts-red),var(--acts-burgundy));
+
+    .action-card:nth-child(1){animation-delay:0.25s}
+    .action-card:nth-child(2){animation-delay:0.35s}
+
+    .action-card:active{
+      transform:scale(0.97);
+      box-shadow:0 1px 8px rgba(0,0,0,0.06);
+    }
+
+    @keyframes cardIn{
+      from{opacity:0;transform:translateY(16px) scale(0.96)}
+      to{opacity:1;transform:translateY(0) scale(1)}
+    }
+
+    .action-icon{
+      width:64px;
+      height:64px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:30px;
+      flex-shrink:0;
+    }
+
+    .action-icon.blue{
+      background:linear-gradient(135deg,#007AFF,#5856D6);
+    }
+
+    .action-icon.red{
+      background:linear-gradient(135deg,#FF3B30,#FF6B6B);
+    }
+
+    .action-text h2{
+      font-size:22px;
+      font-weight:700;
+      letter-spacing:-0.3px;
+      margin-bottom:4px;
+    }
+
+    .action-text p{
+      font-size:16px;
+      color:var(--text-secondary);
+      font-weight:500;
+    }
+
+    .action-arrow{
+      margin-left:auto;
+      font-size:22px;
+      color:#C7C7CC;
+      font-weight:600;
+      flex-shrink:0;
+    }
+
+    /* iPad / tablet tweaks */
+    @media(min-width:768px){
+      .greeting h1{font-size:44px}
+      .greeting p{font-size:22px}
+      .action-card{padding:28px 32px}
+      .action-icon{width:72px;height:72px;font-size:34px;border-radius:18px}
+      .action-text h2{font-size:26px}
+      .action-text p{font-size:18px}
     }
   </style>
 </head>
 <body>
   <div class="page">
-    <div class="card">
-      <h2>Welcome</h2>
-      <a class="btn-link" href="volunteer.html">Log Volunteer Hours</a>
-      <a class="btn-link secondary" href="entertainment.html">Rate Entertainment</a>
+    <div class="greeting">
+      <h1>Welcome</h1>
+      <p>What would you like to do?</p>
+    </div>
+
+    <div class="actions">
+      <a class="action-card" href="volunteer.html">
+        <div class="action-icon blue">
+          <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z" fill="#fff"/></svg>
+        </div>
+        <div class="action-text">
+          <h2>Log Volunteer Hours</h2>
+          <p>Record your time and service area</p>
+        </div>
+        <span class="action-arrow">&rsaquo;</span>
+      </a>
+
+      <a class="action-card" href="entertainment.html">
+        <div class="action-icon red">
+          <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.46 4.73L5.82 21z" fill="#fff"/></svg>
+        </div>
+        <div class="action-text">
+          <h2>Rate Entertainment</h2>
+          <p>Share your feedback on events</p>
+        </div>
+        <span class="action-arrow">&rsaquo;</span>
+      </a>
     </div>
   </div>
 </body>
