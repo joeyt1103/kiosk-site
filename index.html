@@ -115,9 +115,9 @@
     }
 
     .logo-mark svg{
-      width:72px;
-      height:72px;
-      filter:drop-shadow(0 2px 8px rgba(0,0,0,0.15));
+      width:90px;
+      height:90px;
+      filter:drop-shadow(0 4px 12px rgba(0,0,0,0.2));
     }
 
     .hero h1{
@@ -283,7 +283,7 @@
       .hero{padding:72px 24px 56px; padding-top:calc(72px + var(--safe-top))}
       .hero h1{font-size:46px}
       .hero .tagline{font-size:21px}
-      .logo-mark svg{width:84px;height:84px}
+      .logo-mark svg{width:110px;height:110px}
       .prompt{font-size:22px}
       .action-card{padding:28px 32px}
       .action-icon{width:72px;height:72px;font-size:34px;border-radius:18px}
@@ -299,11 +299,17 @@
     <div class="hero-content">
       <div class="logo-mark">
         <!-- Acts heart+house logo mark -->
-        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- House shape -->
-          <path d="M40 12L8 38V68C8 70.2 9.8 72 12 72H30V52H50V72H68C70.2 72 72 70.2 72 68V38L40 12Z" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
-          <!-- Heart -->
-          <path d="M40 35C40 35 28 24 22 30C16 36 22 44 40 54C58 44 64 36 58 30C52 24 40 35 40 35Z" fill="var(--acts-red)" stroke="white" stroke-width="1.5"/>
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- House body (rectangle) -->
+          <rect x="38" y="80" width="120" height="100" rx="2" fill="#9b2743"/>
+          <!-- House roof (triangle) -->
+          <polygon points="100,18 28,88 172,88" fill="#9b2743"/>
+          <!-- Chimney -->
+          <rect x="140" y="38" width="22" height="46" fill="#9b2743"/>
+          <!-- Heart white outline -->
+          <path d="M100,170 C40,125 20,85 52,58 C70,43 92,55 100,72 C108,55 130,43 148,58 C180,85 160,125 100,170Z" fill="none" stroke="#fff" stroke-width="12" stroke-linejoin="round"/>
+          <!-- Heart red fill -->
+          <path d="M100,164 C46,122 28,86 56,62 C72,49 91,59 100,75 C109,59 128,49 144,62 C172,86 154,122 100,164Z" fill="#ee2842"/>
         </svg>
       </div>
       <h1>Welcome</h1>
