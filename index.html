@@ -5,89 +5,161 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <title>Community Portal</title>
+  <title>Acts Community Portal</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
     :root{
-      --blue:#007AFF;
-      --blue-dark:#0062CC;
-      --red:#FF3B30;
-      --red-dark:#D63029;
-      --bg:#F2F2F7;
+      --acts-blue:#0072bc;
+      --acts-blue-dark:#005a96;
+      --acts-blue-light:#d5e7e8;
+      --acts-red:#ee2842;
+      --acts-burgundy:#980539;
+      --acts-burgundy-light:#9b2743;
+      --acts-teal:#005745;
+      --acts-gold:#ffce51;
+      --acts-sage:#acd08c;
+      --bg:#f4f6f8;
       --card:#FFFFFF;
       --text:#1C1C1E;
-      --text-secondary:#8E8E93;
-      --shadow:0 2px 16px rgba(0,0,0,0.08), 0 0 1px rgba(0,0,0,0.1);
+      --text-secondary:#6B7280;
+      --shadow:0 2px 20px rgba(0,0,0,0.07), 0 0 1px rgba(0,0,0,0.1);
       --radius:20px;
       --safe-top:env(safe-area-inset-top, 0px);
       --safe-bottom:env(safe-area-inset-bottom, 0px);
     }
 
     body{
-      font-family:"Inter","SF Pro Display","SF Pro Text",-apple-system,system-ui,sans-serif;
+      font-family:"Work Sans",-apple-system,system-ui,sans-serif;
       background:var(--bg);
       color:var(--text);
       min-height:100dvh;
       display:flex;
       flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      padding:32px 24px;
-      padding-top:calc(32px + var(--safe-top));
-      padding-bottom:calc(32px + var(--safe-bottom));
       -webkit-font-smoothing:antialiased;
       -webkit-tap-highlight-color:transparent;
       user-select:none;
+      overflow-x:hidden;
     }
 
-    .page{
+    /* Branded top bar */
+    .brand-bar{
       width:100%;
+      height:6px;
+      background:linear-gradient(90deg, var(--acts-blue) 0%, var(--acts-blue) 40%, var(--acts-red) 40%, var(--acts-red) 70%, var(--acts-burgundy) 70%, var(--acts-burgundy) 100%);
+      flex-shrink:0;
+    }
+
+    /* Hero section with brand gradient background */
+    .hero{
+      width:100%;
+      padding:60px 24px 48px;
+      padding-top:calc(60px + var(--safe-top));
+      background:linear-gradient(170deg, var(--acts-blue-dark) 0%, var(--acts-blue) 50%, #1a8fd1 100%);
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* Decorative circles in hero */
+    .hero::before{
+      content:"";
+      position:absolute;
+      width:300px;
+      height:300px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.04);
+      top:-80px;
+      right:-60px;
+    }
+
+    .hero::after{
+      content:"";
+      position:absolute;
+      width:200px;
+      height:200px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.03);
+      bottom:-40px;
+      left:-40px;
+    }
+
+    .hero-content{
       max-width:560px;
-      opacity:0;
-      transform:translateY(20px) scale(0.98);
-      animation:pageIn 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
-    }
-
-    @keyframes pageIn{
-      to{opacity:1;transform:translateY(0) scale(1)}
-    }
-
-    .greeting{
+      margin:0 auto;
+      position:relative;
+      z-index:1;
       text-align:center;
-      margin-bottom:40px;
       opacity:0;
-      animation:fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.15s forwards;
+      transform:translateY(16px);
+      animation:fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.1s forwards;
     }
 
     @keyframes fadeUp{
-      from{opacity:0;transform:translateY(12px)}
+      from{opacity:0;transform:translateY(16px)}
       to{opacity:1;transform:translateY(0)}
     }
 
-    .greeting h1{
-      font-size:36px;
-      font-weight:800;
-      letter-spacing:-0.5px;
-      margin-bottom:8px;
-      background:linear-gradient(135deg,var(--blue),#5856D6);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-      background-clip:text;
+    /* Acts logo mark - heart + house SVG */
+    .logo-mark{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:20px;
+      opacity:0;
+      animation:fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.05s forwards;
     }
 
-    .greeting p{
+    .logo-mark svg{
+      width:72px;
+      height:72px;
+      filter:drop-shadow(0 2px 8px rgba(0,0,0,0.15));
+    }
+
+    .hero h1{
+      font-size:38px;
+      font-weight:800;
+      color:#fff;
+      letter-spacing:-0.5px;
+      margin-bottom:8px;
+      text-shadow:0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .hero .tagline{
+      font-size:18px;
+      font-weight:400;
+      color:rgba(255,255,255,0.85);
+      font-style:italic;
+      letter-spacing:0.3px;
+    }
+
+    /* Main content area */
+    .main{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:28px 24px 40px;
+      padding-bottom:calc(40px + var(--safe-bottom));
+    }
+
+    .prompt{
       font-size:20px;
+      font-weight:600;
       color:var(--text-secondary);
-      font-weight:500;
+      margin-bottom:24px;
+      text-align:center;
+      opacity:0;
+      animation:fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.3s forwards;
     }
 
     .actions{
+      width:100%;
+      max-width:560px;
       display:flex;
       flex-direction:column;
       gap:16px;
@@ -107,10 +179,31 @@
       -webkit-tap-highlight-color:transparent;
       opacity:0;
       animation:cardIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+      position:relative;
+      overflow:hidden;
     }
 
-    .action-card:nth-child(1){animation-delay:0.25s}
-    .action-card:nth-child(2){animation-delay:0.35s}
+    /* Subtle left accent bar on cards */
+    .action-card::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:0;
+      bottom:0;
+      width:5px;
+      border-radius:20px 0 0 20px;
+    }
+
+    .action-card.blue-card::before{
+      background:linear-gradient(180deg, var(--acts-blue), var(--acts-blue-dark));
+    }
+
+    .action-card.red-card::before{
+      background:linear-gradient(180deg, var(--acts-red), var(--acts-burgundy));
+    }
+
+    .action-card:nth-child(1){animation-delay:0.35s}
+    .action-card:nth-child(2){animation-delay:0.45s}
 
     .action-card:active{
       transform:scale(0.97);
@@ -134,11 +227,11 @@
     }
 
     .action-icon.blue{
-      background:linear-gradient(135deg,#007AFF,#5856D6);
+      background:linear-gradient(135deg, var(--acts-blue), var(--acts-blue-dark));
     }
 
     .action-icon.red{
-      background:linear-gradient(135deg,#FF3B30,#FF6B6B);
+      background:linear-gradient(135deg, var(--acts-red), var(--acts-burgundy));
     }
 
     .action-text h2{
@@ -149,7 +242,7 @@
     }
 
     .action-text p{
-      font-size:16px;
+      font-size:15px;
       color:var(--text-secondary);
       font-weight:500;
     }
@@ -162,26 +255,67 @@
       flex-shrink:0;
     }
 
-    /* iPad / tablet tweaks */
+    /* Footer branding */
+    .footer{
+      text-align:center;
+      padding:20px 24px 28px;
+      padding-bottom:calc(28px + var(--safe-bottom));
+      opacity:0;
+      animation:fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.55s forwards;
+    }
+
+    .footer-line{
+      width:48px;
+      height:3px;
+      border-radius:3px;
+      background:linear-gradient(90deg, var(--acts-blue), var(--acts-burgundy));
+      margin:0 auto 12px;
+    }
+
+    .footer p{
+      font-size:13px;
+      color:#aaa;
+      font-weight:500;
+    }
+
+    /* iPad tweaks */
     @media(min-width:768px){
-      .greeting h1{font-size:44px}
-      .greeting p{font-size:22px}
+      .hero{padding:72px 24px 56px; padding-top:calc(72px + var(--safe-top))}
+      .hero h1{font-size:46px}
+      .hero .tagline{font-size:21px}
+      .logo-mark svg{width:84px;height:84px}
+      .prompt{font-size:22px}
       .action-card{padding:28px 32px}
       .action-icon{width:72px;height:72px;font-size:34px;border-radius:18px}
       .action-text h2{font-size:26px}
-      .action-text p{font-size:18px}
+      .action-text p{font-size:17px}
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <div class="greeting">
+  <div class="brand-bar"></div>
+
+  <div class="hero">
+    <div class="hero-content">
+      <div class="logo-mark">
+        <!-- Acts heart+house logo mark -->
+        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- House shape -->
+          <path d="M40 12L8 38V68C8 70.2 9.8 72 12 72H30V52H50V72H68C70.2 72 72 70.2 72 68V38L40 12Z" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
+          <!-- Heart -->
+          <path d="M40 35C40 35 28 24 22 30C16 36 22 44 40 54C58 44 64 36 58 30C52 24 40 35 40 35Z" fill="var(--acts-red)" stroke="white" stroke-width="1.5"/>
+        </svg>
+      </div>
       <h1>Welcome</h1>
-      <p>What would you like to do?</p>
+      <div class="tagline">Where Loving-Kindness Lives</div>
     </div>
+  </div>
+
+  <div class="main">
+    <div class="prompt">What would you like to do?</div>
 
     <div class="actions">
-      <a class="action-card" href="volunteer.html">
+      <a class="action-card blue-card" href="volunteer.html">
         <div class="action-icon blue">
           <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z" fill="#fff"/></svg>
         </div>
@@ -192,7 +326,7 @@
         <span class="action-arrow">&rsaquo;</span>
       </a>
 
-      <a class="action-card" href="entertainment.html">
+      <a class="action-card red-card" href="entertainment.html">
         <div class="action-icon red">
           <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.46 4.73L5.82 21z" fill="#fff"/></svg>
         </div>
@@ -203,6 +337,11 @@
         <span class="action-arrow">&rsaquo;</span>
       </a>
     </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-line"></div>
+    <p>Acts Retirement-Life Communities</p>
   </div>
 </body>
 </html>
